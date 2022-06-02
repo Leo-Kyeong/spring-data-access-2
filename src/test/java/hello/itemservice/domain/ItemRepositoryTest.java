@@ -17,8 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ItemRepositoryTest {
 
     @Autowired
-    ItemRepository itemRepository;
+    ItemRepository itemRepository; // 테스트는 인터페이스로 유연하게 테스트하자!
 
+    /**
+     * @AfterEach 테스트의 실행이 끝나는 시점에 호출
+     * 여기서는 메모리 저장소를 완전히 삭제해서 다음 테스트에 영향을 주지 않도록 초기화
+     */
     @AfterEach
     void afterEach() {
         //MemoryItemRepository 의 경우 제한적으로 사용
