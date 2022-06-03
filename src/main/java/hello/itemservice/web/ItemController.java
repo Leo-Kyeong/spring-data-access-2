@@ -58,5 +58,4 @@ public class ItemController {
         itemService.update(itemId, updateParam);
         return "redirect:/items/{itemId}";
     }
-
 }
