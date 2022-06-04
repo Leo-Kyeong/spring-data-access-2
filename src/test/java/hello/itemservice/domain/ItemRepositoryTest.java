@@ -5,30 +5,55 @@ import hello.itemservice.repository.ItemSearchCond;
 import hello.itemservice.repository.ItemUpdateDto;
 import hello.itemservice.repository.memory.MemoryItemRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
 class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository; // 테스트는 인터페이스로 유연하게 테스트하자!
 
+//    // 트랜잭션 관련 코드
+//    @Autowired
+//    PlatformTransactionManager transactionManager;
+//    TransactionStatus status;
+//
+//    /**
+//     * @BeforeEach 각각의 테스트 케이스를 실행하기 직전에 호출
+//     * 트랜잭션 시작, 각각의 테스트를 트랜잭션 범위 안에서 실행 할 수 있다.
+//     */
+//    @BeforeEach
+//    void beforeEach() {
+//        // 트랜잭션 시작
+//        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+//    }
+
     /**
-     * @AfterEach 테스트의 실행이 끝나는 시점에 호출
+     * @AfterEach 각각의 테스트 케이스가 완료된 직후에 호출
      * 여기서는 메모리 저장소를 완전히 삭제해서 다음 테스트에 영향을 주지 않도록 초기화
+     * 트랜잭션 롤백을 수행
      */
     @AfterEach
     void afterEach() {
-        //MemoryItemRepository 의 경우 제한적으로 사용
+        // MemoryItemRepository 의 경우 제한적으로 사용
         if (itemRepository instanceof MemoryItemRepository) {
             ((MemoryItemRepository) itemRepository).clearStore();
         }
+        // 트랜잭션 롤백
+        // transactionManager.rollback(status);
     }
 
     @Test

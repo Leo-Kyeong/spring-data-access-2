@@ -2,12 +2,17 @@ package hello.itemservice;
 
 import hello.itemservice.config.*;
 import hello.itemservice.repository.ItemRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.sql.DataSource;
+
+@Slf4j
 //@Import(MemoryConfig.class)
 //@Import(JdbcTemplateV1Config.class)
 //@Import(JdbcTemplateV2Config.class)
@@ -19,9 +24,28 @@ public class ItemServiceApplication {
 		SpringApplication.run(ItemServiceApplication.class, args);
 	}
 
+	/**
+	 * 다양한 환경에 따라서 다른 설정을 할 때 사용
+	 * spring.profiles.active=local 일 경우 빈으로 등록
+	 * 테스트 데이터를 넣기위한 빈 등록
+	 */
 	@Bean
-	@Profile("local") // 다양한 환경에 따라서 다른 설정을 할 때 사용, spring.profiles.active=local 일 경우 빈으로 등록
+	@Profile("local")
 	public TestDataInit testDataInit(ItemRepository itemRepository) {
 		return new TestDataInit(itemRepository);
 	}
+
+/*
+	@Bean
+	@Profile("test")
+	public DataSource dataSource(){
+		log.info("메모리 데이터베이스 초기화");
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName("org.h2.Driver");
+		dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=1");
+		dataSource.setUsername("sa");
+		dataSource.setPassword("");
+		return dataSource;
+	}
+*/
 }
